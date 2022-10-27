@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
+import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
+
 @Injectable()
 export class UsersService {
   constructor() {}
@@ -16,16 +18,18 @@ export class UsersService {
     }
   }
 
-  create(data: any){
-    data.created = true;
-    return data;
+  create(data: CreateUserDTO){
+    return {
+      message: 'user created!',
+      data,
+    }
   }
 
-  update(id: string, data: any){
+  update(id: string, changes: UpdateUserDTO){
     return {
       message: 'updated!',
       id,
-      data,
+      changes,
     }
   }
 
