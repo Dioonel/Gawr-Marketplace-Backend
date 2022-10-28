@@ -1,39 +1,31 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
+import { UsersStoreService } from './users-store.service';
 
 @Injectable()
 export class UsersService {
-  constructor() {}
+  constructor(private userStore: UsersStoreService) {}
 
-  getAll() {
-    return 'all users';
+  async getAll() {
+    return await this.userStore.getAll();
   }
 
-  getOne(id: string){
-    if(id){
-      return `user ${id}`;
-    } else {
-      throw new NotFoundException(':(');
-    }
+  async getOne(id: string){
+    return await this.userStore.getOne(id);
   }
 
-  create(data: CreateUserDTO){
-    return {
-      message: 'user created!',
-      data,
-    }
+  async create(data: CreateUserDTO){
+    return await this.userStore.create(data);
   }
 
-  update(id: string, changes: UpdateUserDTO){
-    return {
-      message: 'updated!',
-      id,
-      changes,
-    }
+  async update(id: string, changes: UpdateUserDTO){
+    return await this.userStore.update(id, changes);
   }
 
-  delete(id: string){
-    return true;
+  async delete(id: string){
+    let user = await this.userStore.delete(id);
+    if(user) return true;
+    else return false;
   }
 }
