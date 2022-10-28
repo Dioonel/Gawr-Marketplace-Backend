@@ -1,39 +1,31 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { CreateProductDTO, UpdateProductDTO } from './../dtos/products.dtos';
+import { ProductsStoreService } from './products-store.service';
 
 @Injectable()
 export class ProductsService {
-  constructor() {}
+  constructor(private productsStore: ProductsStoreService) {}
 
-  getAll() {
-    return 'all products';
+  async getAll() {
+    return await this.productsStore.getAll();
   }
 
-  getOne(id: string){
-    if(id){
-      return `product ${id}`;
-    } else {
-      throw new NotFoundException(':(');
-    }
+  async getOne(id: string){
+    return await this.productsStore.getOne(id);
   }
 
-  create(data: CreateProductDTO){
-    return {
-      message: 'product created!',
-      data,
-    }
+  async create(data: CreateProductDTO){
+    return await this.productsStore.create(data);
   }
 
-  update(id: string, changes: UpdateProductDTO){
-    return {
-      message: 'product updated!',
-      id,
-      changes,
-    }
+  async update(id: string, changes: UpdateProductDTO){
+    return await this.productsStore.update(id, changes);
   }
 
-  delete(id: string){
-    return true;
+  async delete(id: string){
+    let product = await this.productsStore.delete(id);
+    if(product) return true;
+    else return false;
   }
 }

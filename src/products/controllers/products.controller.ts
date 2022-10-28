@@ -2,6 +2,7 @@ import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common'
 
 import { ProductsService } from './../services/products.service';
 import { CreateProductDTO, UpdateProductDTO } from './../dtos/products.dtos';
+import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
 
 @Controller('products')
 export class ProductsController {
@@ -13,7 +14,7 @@ export class ProductsController {
   }
 
   @Get(':id')
-  getOneProduct(@Param('id') id: string){
+  getOneProduct(@Param('id', MongoIdPipe) id: string){
     return this.productsService.getOne(id);
   }
 
@@ -23,12 +24,12 @@ export class ProductsController {
   }
 
   @Put(':id')
-  updateProduct(@Param('id') id: string, @Body() body: UpdateProductDTO){
+  updateProduct(@Param('id', MongoIdPipe) id: string, @Body() body: UpdateProductDTO){
     return this.productsService.update(id, body);
   }
 
   @Delete(':id')
-  deleteProduct(@Param('id') id: string) {
+  deleteProduct(@Param('id', MongoIdPipe) id: string) {
     return this.productsService.delete(id);
   }
 }
