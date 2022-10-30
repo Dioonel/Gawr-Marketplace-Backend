@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty } from 'class-validator';
+import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty, IsMongoId } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateUserDTO {
@@ -15,6 +15,10 @@ export class CreateUserDTO {
   @IsOptional()
   @IsUrl()
   readonly image: string;
+
+  @IsMongoId()
+  @IsOptional()
+  readonly cart: string;
 }
 
 export class UpdateUserDTO extends PartialType(CreateUserDTO) {}

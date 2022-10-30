@@ -10,11 +10,13 @@ export class UsersStoreService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async getAll() {
-    return await this.userModel.find();
+    return await this.userModel.find()
+    .populate({path: 'cart', populate: {path: 'products'}});
   }
 
   async getOne(id: string) {
-    return await this.userModel.findById(id);
+    return await this.userModel.findById(id)
+    .populate({path: 'cart', populate: {path: 'products'}});
   }
 
   async create(data: CreateUserDTO){
@@ -23,7 +25,8 @@ export class UsersStoreService {
   }
 
   async update(id: string, changes: UpdateUserDTO){
-    const user = await this.userModel.findByIdAndUpdate(id, {$set: changes}, {new: true});
+    const user = await this.userModel.findByIdAndUpdate(id, {$set: changes}, {new: true})
+    .populate({path: 'cart', populate: {path: 'products'}});
     if (!user) {
       throw new NotFoundException("Couldn't update user. ID not found.");
     }
