@@ -14,7 +14,11 @@ export class ProductsStoreService {
   }
 
   async getOne(id: string) {
-    return await this.productModel.findById(id);
+    const product = await this.productModel.findById(id);
+    if (!product) {
+      throw new NotFoundException("Product not found.");
+    }
+    return product;
   }
 
   async create(data: CreateProductDTO){
@@ -25,12 +29,16 @@ export class ProductsStoreService {
   async update(id: string, changes: UpdateProductDTO){
     const product = await this.productModel.findByIdAndUpdate(id, {$set: changes}, {new: true});
     if (!product) {
-      throw new NotFoundException("Couldn't update product. ID not found.");
+      throw new NotFoundException("Product not found.");
     }
     return product;
   }
 
   async delete(id: string){
-    return this.productModel.findByIdAndDelete(id);
+    const product = await this.productModel.findByIdAndDelete(id);
+    if(!product) {
+      throw new NotFoundException("Product not found.");
+    }
+    return true;
   }
 }

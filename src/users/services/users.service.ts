@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
 import { CartsService } from './carts.service';
 import { UsersStoreService } from './users-store.service';
+import { isEmpty } from './../../common/extra/fns';
 
 @Injectable()
 export class UsersService {
@@ -17,8 +18,8 @@ export class UsersService {
   }
 
   async create(data: CreateUserDTO){
-    let newCart = await this.cartService.create();
-    let user = {
+    const newCart = await this.cartService.create();
+    const user = {
       ...data,
       cart: newCart._id
     }
@@ -26,12 +27,13 @@ export class UsersService {
   }
 
   async update(id: string, changes: UpdateUserDTO){
+    if(isEmpty(changes)){
+      throw new BadRequestException("Invalid data.");
+    }
     return await this.userStore.update(id, changes);
   }
 
   async delete(id: string){
-    let user = await this.userStore.delete(id);
-    if(user) return true;
-    else return false;
+    return await this.userStore.delete(id);
   }
 }

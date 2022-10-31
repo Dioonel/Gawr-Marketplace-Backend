@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { CreateCartDTO } from './../dtos/carts.dtos';
 import { Cart } from './../entities/cart.entity';
 
 @Injectable()
@@ -14,7 +13,11 @@ export class CartsStoreService {
   }
 
   async getOne(id: string) {
-    return await this.cartModel.findById(id);
+    const cart = await this.cartModel.findById(id);
+    if(!cart){
+      throw new NotFoundException("ID not found.");
+    }
+    return cart;
   }
 
   async create(){
@@ -22,23 +25,27 @@ export class CartsStoreService {
     return await newCart.save();
   }
 
-  // async update(id: string, changes: any){
-  //   const cart = await this.cartModel.findByIdAndUpdate(id, {$set: changes}, { new: true });
-  //   if (!cart) {
-  //     throw new NotFoundException("Couldn't update cart. ID not found.");
-  //   }
-  //   return cart;
-  // }
-
   async pushItem(cartId: string, productId: string){
-    return await this.cartModel.findByIdAndUpdate(cartId, { $addToSet: { products: productId }}, { new: true }).populate('products');
+    const cart = await this.cartModel.findByIdAndUpdate(cartId, { $addToSet: { products: productId }}, { new: true }).populate('products');
+    if(!cart){
+      throw new NotFoundException("Cart not found.");
+    }
+    return cart;
   }
 
   async popItem(cartId: string, productId: string){
-    return await this.cartModel.findByIdAndUpdate(cartId, { $pull: { products: productId }}, { new:true }).populate('products');
+    const cart = await this.cartModel.findByIdAndUpdate(cartId, { $pull: { products: productId }}, { new:true }).populate('products');
+    if(!cart){
+      throw new NotFoundException("Cart not found.");
+    }
+    return cart;
   }
 
   async empty(id: string){
-    return await this.cartModel.findByIdAndUpdate(id, { products: [] }, { new: true });
+    const cart = await this.cartModel.findByIdAndUpdate(id, { products: [] }, { new: true });
+    if(!cart){
+      throw new NotFoundException("Cart not found.");
+    }
+    return cart;
   }
 }

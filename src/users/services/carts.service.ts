@@ -1,6 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { CreateCartDTO } from './../dtos/carts.dtos';
 import { CartsStoreService } from './carts-store.service';
 
 @Injectable()
@@ -18,10 +17,6 @@ export class CartsService {
   async create(){
     return await this.cartStore.create();
   }
-
-  // async update(id: string, changes: any){
-  //   return await this.cartStore.update(id, changes);
-  // }
 
   async pushItem(cartId: string, productId: string){
     return await this.cartStore.pushItem(cartId, productId);

@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { CreateProductDTO, UpdateProductDTO } from './../dtos/products.dtos';
 import { ProductsStoreService } from './products-store.service';
+import { isEmpty } from './../../common/extra/fns';
 
 @Injectable()
 export class ProductsService {
@@ -20,12 +21,13 @@ export class ProductsService {
   }
 
   async update(id: string, changes: UpdateProductDTO){
+    if(isEmpty(changes)){
+      throw new BadRequestException("Invalid data.");
+    }
     return await this.productsStore.update(id, changes);
   }
 
   async delete(id: string){
-    let product = await this.productsStore.delete(id);
-    if(product) return true;
-    else return false;
+    return await this.productsStore.delete(id);
   }
 }

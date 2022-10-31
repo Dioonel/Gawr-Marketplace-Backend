@@ -4,6 +4,7 @@ import { ProductsService } from './../services/products.service';
 import { CreateProductDTO, UpdateProductDTO } from './../dtos/products.dtos';
 import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
 
+
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {};

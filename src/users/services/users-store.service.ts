@@ -15,8 +15,12 @@ export class UsersStoreService {
   }
 
   async getOne(id: string) {
-    return await this.userModel.findById(id)
+    const user = await this.userModel.findById(id)
     .populate({path: 'cart', populate: {path: 'products'}});
+    if (!user) {
+      throw new NotFoundException("User not found.");
+    }
+    return user;
   }
 
   async create(data: CreateUserDTO){
@@ -28,12 +32,16 @@ export class UsersStoreService {
     const user = await this.userModel.findByIdAndUpdate(id, {$set: changes}, {new: true})
     .populate({path: 'cart', populate: {path: 'products'}});
     if (!user) {
-      throw new NotFoundException("Couldn't update user. ID not found.");
+      throw new NotFoundException("User not found.");
     }
     return user;
   }
 
   async delete(id: string){
-    return this.userModel.findByIdAndDelete(id);
+    const user = await this.userModel.findByIdAndDelete(id);
+    if (!user) {
+      throw new NotFoundException("User not found.");
+    }
+    return true;
   }
 }
