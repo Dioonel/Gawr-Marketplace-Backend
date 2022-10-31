@@ -11,12 +11,14 @@ export class UsersStoreService {
 
   async getAll() {
     return await this.userModel.find()
-    .populate({path: 'cart', populate: {path: 'products'}});
+    .populate({path: 'cart', select: '-__v', populate: {path: 'products', select: '-__v'}})
+    .select('-__v');
   }
 
   async getOne(id: string) {
     const user = await this.userModel.findById(id)
-    .populate({path: 'cart', populate: {path: 'products'}});
+    .populate({path: 'cart', select: '-__v', populate: {path: 'products', select: '-__v'}})
+    .select('-__v');
     if (!user) {
       throw new NotFoundException("User not found.");
     }
@@ -30,7 +32,8 @@ export class UsersStoreService {
 
   async update(id: string, changes: UpdateUserDTO){
     const user = await this.userModel.findByIdAndUpdate(id, {$set: changes}, {new: true})
-    .populate({path: 'cart', populate: {path: 'products'}});
+    .populate({path: 'cart', select: '-__v', populate: {path: 'products', select: '-__v'}})
+    .select('-__v');
     if (!user) {
       throw new NotFoundException("User not found.");
     }

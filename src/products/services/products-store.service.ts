@@ -10,11 +10,11 @@ export class ProductsStoreService {
   constructor(@InjectModel(Product.name) private productModel: Model<Product>) {}
 
   async getAll() {
-    return await this.productModel.find();
+    return await this.productModel.find().select('-__v');
   }
 
   async getOne(id: string) {
-    const product = await this.productModel.findById(id);
+    const product = await this.productModel.findById(id).select('-__v');
     if (!product) {
       throw new NotFoundException("Product not found.");
     }
@@ -27,7 +27,7 @@ export class ProductsStoreService {
   }
 
   async update(id: string, changes: UpdateProductDTO){
-    const product = await this.productModel.findByIdAndUpdate(id, {$set: changes}, {new: true});
+    const product = await this.productModel.findByIdAndUpdate(id, {$set: changes}, {new: true}).select('-__v');
     if (!product) {
       throw new NotFoundException("Product not found.");
     }

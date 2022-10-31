@@ -9,13 +9,17 @@ export class CartsStoreService {
   constructor(@InjectModel(Cart.name) private cartModel: Model<Cart>) {}
 
   async getAll() {
-    return await this.cartModel.find().populate('products');
+    return await this.cartModel.find()
+    .populate({ path:'products', select: '-__v' })
+    .select('-__v');
   }
 
   async getOne(id: string) {
-    const cart = await this.cartModel.findById(id);
+    const cart = await this.cartModel.findById(id)
+    .populate({ path:'products', select: '-__v' })
+    .select('-__v');
     if(!cart){
-      throw new NotFoundException("ID not found.");
+      throw new NotFoundException("Cart not found.");
     }
     return cart;
   }
@@ -26,7 +30,9 @@ export class CartsStoreService {
   }
 
   async pushItem(cartId: string, productId: string){
-    const cart = await this.cartModel.findByIdAndUpdate(cartId, { $addToSet: { products: productId }}, { new: true }).populate('products');
+    const cart = await this.cartModel.findByIdAndUpdate(cartId, { $addToSet: { products: productId }}, { new: true })
+    .populate({ path:'products', select: '-__v' })
+    .select('-__v');
     if(!cart){
       throw new NotFoundException("Cart not found.");
     }
@@ -34,7 +40,9 @@ export class CartsStoreService {
   }
 
   async popItem(cartId: string, productId: string){
-    const cart = await this.cartModel.findByIdAndUpdate(cartId, { $pull: { products: productId }}, { new:true }).populate('products');
+    const cart = await this.cartModel.findByIdAndUpdate(cartId, { $pull: { products: productId }}, { new:true })
+    .populate({ path:'products', select: '-__v' })
+    .select('-__v');
     if(!cart){
       throw new NotFoundException("Cart not found.");
     }
@@ -42,7 +50,8 @@ export class CartsStoreService {
   }
 
   async empty(id: string){
-    const cart = await this.cartModel.findByIdAndUpdate(id, { products: [] }, { new: true });
+    const cart = await this.cartModel.findByIdAndUpdate(id, { products: [] }, { new: true })
+    .select('-__v');
     if(!cart){
       throw new NotFoundException("Cart not found.");
     }
