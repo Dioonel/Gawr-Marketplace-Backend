@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { ProductsService } from 'src/products/services/products.service';
 import { CartsStoreService } from './carts-store.service';
+import { CreateItemDTO } from './../../products/dtos/items.dtos';
+import { subtotal, total } from 'src/common/extra/fns';
 
 @Injectable()
 export class CartsService {
@@ -12,24 +14,24 @@ export class CartsService {
   }
 
   async getOne(id: string){
-    return await this.cartStore.getOne(id);
+    let cart = await this.cartStore.getOne(id);
+    cart.items = subtotal(cart.items);
+    return total(cart);
   }
 
   async create(){
     return await this.cartStore.create();
   }
 
-  async pushItem(cartId: string, productId: string, quantity: number){
-    const product = await this.productsService.getOne(productId);
+  async pushItem(cartId: string, item: CreateItemDTO){
+    const product = await this.productsService.getOne(item.product);
     if(product){
-      return await this.cartStore.pushItem(cartId, {product: productId, quantity});
+      return await this.cartStore.pushItem(cartId, item);
     }
   }
 
-  async popItem(cartId: string, productId: string){
-    let thing = await this.cartStore.popItem(cartId, productId);
-    console.log(thing);
-    return thing;
+  async popItem(cartId: string, itemId: string){
+    return await this.cartStore.popItem(cartId, itemId);
   }
 
   async empty(id: string){

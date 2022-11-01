@@ -2,6 +2,7 @@ import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
 
 import { CartsService } from './../services/carts.service';
 import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
+import { CreateItemDTO } from './../../products/dtos/items.dtos';
 
 @Controller('carts')
 export class CartsController {
@@ -18,13 +19,13 @@ export class CartsController {
   }
 
   @Post(':id')
-  pushItem(@Param('id', MongoIdPipe) cartId: string, @Body('productId', MongoIdPipe) productId: string, @Body('quantity') quantity: number) {
-    return this.cartsService.pushItem(cartId, productId, quantity);
+  pushItem(@Param('id', MongoIdPipe) cartId: string, @Body() body: CreateItemDTO) {
+    return this.cartsService.pushItem(cartId, body);
   }
 
   @Delete(':id')
-  popItem(@Param('id', MongoIdPipe) cartId: string, @Body('productId', MongoIdPipe) productId: string) {
-    return this.cartsService.popItem(cartId, productId);
+  popItem(@Param('id', MongoIdPipe) cartId: string, @Body('productId', MongoIdPipe) itemId: string) {
+    return this.cartsService.popItem(cartId, itemId);
   }
 
   @Delete(':id/empty')
