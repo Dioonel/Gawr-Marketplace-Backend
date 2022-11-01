@@ -18,8 +18,8 @@ export class CartsController {
   }
 
   @Post(':id')
-  pushItem(@Param('id', MongoIdPipe) cartId: string, @Body('productId', MongoIdPipe) productId: string) {
-    return this.cartsService.pushItem(cartId, productId);
+  pushItem(@Param('id', MongoIdPipe) cartId: string, @Body('productId', MongoIdPipe) productId: string, @Body('quantity') quantity: number) {
+    return this.cartsService.pushItem(cartId, productId, quantity);
   }
 
   @Delete(':id')

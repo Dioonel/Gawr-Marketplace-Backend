@@ -1,14 +1,12 @@
-import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty, IsMongoId, IsArray } from 'class-validator';
-import { PartialType } from '@nestjs/mapped-types';
+import { IsOptional, IsNotEmpty, IsMongoId, IsArray } from 'class-validator';
+//import { PartialType } from '@nestjs/mapped-types';
+
+//import { ItemDTO } from 'src/products/dtos/items.dtos';
 
 export class CreateCartDTO {
-  @IsOptional()
-  @IsMongoId()
-  readonly user: string;
-
   @IsArray()
   @IsNotEmpty()
-  readonly products: string[];
+  readonly items: any;
 }
 
 //export class UpdateCartDTO extends PartialType(CreateCartDTO) {}

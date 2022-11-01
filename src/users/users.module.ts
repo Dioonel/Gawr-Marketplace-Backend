@@ -9,9 +9,10 @@ import { Cart, CartSchema } from './entities/cart.entity';
 import { CartsController } from './controllers/carts.controller';
 import { CartsService } from './services/carts.service';
 import { CartsStoreService } from './services/carts-store.service';
+import { ProductsModule } from 'src/products/products.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([
+  imports: [ProductsModule, MongooseModule.forFeature([
     {
       name: User.name,
       schema: UserSchema

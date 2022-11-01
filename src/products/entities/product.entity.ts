@@ -6,7 +6,7 @@ export class Product extends Document{
   @Prop({ required: true })
   product: string;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ required: true, type: Number })
   price: number;
 
   @Prop({ required: false, default: '' })

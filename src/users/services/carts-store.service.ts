@@ -10,14 +10,14 @@ export class CartsStoreService {
 
   async getAll() {
     return await this.cartModel.find()
-    .populate({ path:'products', select: '-__v' })
-    .select('-__v');
+      .populate({ path: 'items.product', select: '-__v'})
+      .select('-__v');
   }
 
   async getOne(id: string) {
     const cart = await this.cartModel.findById(id)
-    .populate({ path:'products', select: '-__v' })
-    .select('-__v');
+      .populate({ path: 'items.product', select: '-__v'})
+      .select('-__v');
     if(!cart){
       throw new NotFoundException("Cart not found.");
     }
@@ -29,20 +29,29 @@ export class CartsStoreService {
     return await newCart.save();
   }
 
-  async pushItem(cartId: string, productId: string){
-    const cart = await this.cartModel.findByIdAndUpdate(cartId, { $addToSet: { products: productId }}, { new: true })
-    .populate({ path:'products', select: '-__v' })
-    .select('-__v');
+  async pushItem(cartId: string, changes: any){
+    const cart = await this.cartModel.findById(cartId)
+    .populate('items.product');
     if(!cart){
       throw new NotFoundException("Cart not found.");
     }
-    return cart;
+    const index = cart.items.findIndex(item => item.product._id.toString() === changes.product);
+    if(index === -1) {
+      return await this.cartModel.findByIdAndUpdate(cartId, { $addToSet: { items: changes }}, { new: true })  // If item is not in cart, add it
+        .populate({ path: 'items.product', select: '-__v'})
+        .select('-__v');
+    }
+    cart.items[index].quantity += changes.quantity;                                                 // If item is already in cart, add quantity
+    await cart.save();
+    return await this.cartModel.findById(cartId)
+      .populate({ path: 'items.product', select: '-__v'})
+      .select('-__v');
   }
 
-  async popItem(cartId: string, productId: string){
-    const cart = await this.cartModel.findByIdAndUpdate(cartId, { $pull: { products: productId }}, { new:true })
-    .populate({ path:'products', select: '-__v' })
-    .select('-__v');
+  async popItem(cartId: string, itemId: string){
+    const cart = await this.cartModel.findByIdAndUpdate(cartId, { $pull: { items: itemId }}, { new: true })
+      .populate({ path: 'items.product', select: '-__v'})
+      .select('-__v');
     if(!cart){
       throw new NotFoundException("Cart not found.");
     }
@@ -50,8 +59,8 @@ export class CartsStoreService {
   }
 
   async empty(id: string){
-    const cart = await this.cartModel.findByIdAndUpdate(id, { products: [] }, { new: true })
-    .select('-__v');
+    const cart = await this.cartModel.findByIdAndUpdate(id, { items: [] }, { new: true })
+      .select('-__v');
     if(!cart){
       throw new NotFoundException("Cart not found.");
     }
