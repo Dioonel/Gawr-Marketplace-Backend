@@ -5,6 +5,7 @@ export default registerAs('config', () => {
     db: {
       user: process.env.MONGO_USER,
       password: process.env.MONGO_PASSWORD
-    }
+    },
+    jwtSecret: process.env.JWT_SECRET
   }
 });

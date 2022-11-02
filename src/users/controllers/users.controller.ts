@@ -1,35 +1,40 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards } from '@nestjs/common';
 
 import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
 import { UsersService } from './../services/users.service';
 import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
+import { JwtAuthGuard } from './../../auth/guards/jwt-auth.guard';
+import { Public } from './../../auth/decorators/public.decorator';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService){}
 
+  @Public()
   @Get()
-  getProducts(){
+  getUsers(){
     return this.usersService.getAll();
   }
 
+  @Public()
   @Get(':id')
-  getOneProduct(@Param('id', MongoIdPipe) id: string){
+  getOneUser(@Param('id', MongoIdPipe) id: string){
     return this.usersService.getOne(id);
   }
 
   @Post()
-  createProduct(@Body() body: CreateUserDTO){
+  createUser(@Body() body: CreateUserDTO){
     return this.usersService.create(body);
   }
 
   @Put(':id')
-  updateProduct(@Param('id', MongoIdPipe) id: string, @Body() body: UpdateUserDTO){
+  updateUser(@Param('id', MongoIdPipe) id: string, @Body() body: UpdateUserDTO){
     return this.usersService.update(id, body);
   }
 
   @Delete(':id')
-  deleteProduct(@Param('id', MongoIdPipe) id: string) {
+  deleteUser(@Param('id', MongoIdPipe) id: string) {
     return this.usersService.delete(id);
   }
 }
