@@ -5,11 +5,14 @@ import { Cart } from './cart.entity';
 
 @Schema()
 export class User extends Document{
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true, immutable: true })
   username: string;
 
-  @Prop({ type: Number, required: true })
-  age: number;
+  @Prop({ required: true })
+  password: string;
+
+  @Prop({ type: Number, required: false })
+  age?: number;
 
   @Prop({ required: false, default: '' })
   image?: string;

@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty, IsMongoId } from 'class-validator';
+import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty, IsMongoId, Length } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateUserDTO {
@@ -8,6 +8,11 @@ export class CreateUserDTO {
   readonly username: string;
 
   @IsNotEmpty()
+  @IsString()
+  @Length(8)
+  readonly password: string;
+
+  @IsOptional()
   @IsNumber()
   @IsPositive()
   readonly age: number;

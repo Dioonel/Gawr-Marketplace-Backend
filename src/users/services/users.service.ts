@@ -17,6 +17,10 @@ export class UsersService {
     return await this.userStore.getOne(id);
   }
 
+  async getByUsername(username: string){
+    return await this.userStore.getByUsername(username);
+  }
+
   async create(data: CreateUserDTO){
     const newCart = await this.cartService.create();
     const user = {
