@@ -11,11 +11,14 @@ export class User extends Document{
   @Prop({ required: true })
   password: string;
 
+  @Prop({ required: false, default: 'user'})
+  role: string;
+
   @Prop({ type: Number, required: false })
   age?: number;
 
   @Prop({ required: false, default: '' })
-  image?: string;
+  image: string;
 
   @Prop({ required: true, type: Types.ObjectId, ref: Cart.name, immutable: true })
   cart?: Cart | Types.ObjectId;

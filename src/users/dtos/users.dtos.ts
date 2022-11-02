@@ -13,6 +13,10 @@ export class CreateUserDTO {
   readonly password: string;
 
   @IsOptional()
+  @IsString()
+  readonly role: string;
+
+  @IsOptional()
   @IsNumber()
   @IsPositive()
   readonly age: number;
