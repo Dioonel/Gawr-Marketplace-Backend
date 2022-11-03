@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -8,6 +8,11 @@ import { AuthService } from './../services/auth.service';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @Get('login')
+  getLogin() {                                                                            // Dev only
+    return { message: 'Please login first' };
+  }
 
   @UseGuards(AuthGuard('local'))
   @Post('login')

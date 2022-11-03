@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, UseFilters } from '@nestjs/common';
 
 import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
 import { UsersService } from './../services/users.service';
 import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
 import { JwtAuthGuard } from './../../auth/guards/jwt-auth.guard';
 import { Public } from './../../auth/decorators/public.decorator';
+import { ViewAuthFilter } from './../../auth/guards/exception.filter';
 
 @UseGuards(JwtAuthGuard)
+@UseFilters(ViewAuthFilter)
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService){}
@@ -20,6 +22,7 @@ export class UsersController {
   @Public()
   @Get(':id')
   getOneUser(@Param('id', MongoIdPipe) id: string){
+    console.log('wtf');
     return this.usersService.getOne(id);
   }
 

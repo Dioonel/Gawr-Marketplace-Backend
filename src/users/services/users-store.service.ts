@@ -66,4 +66,14 @@ export class UsersStoreService {
     }
     return true;
   }
+
+  async getCartByUserId(userId: string){
+    const cart = await this.userModel.findById(userId)
+      .select('cart')
+      .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}});
+    if (!cart){
+      throw new NotFoundException("User/cart not found.");
+    }
+    return cart.cart;
+  }
 }

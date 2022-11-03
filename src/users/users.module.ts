@@ -24,6 +24,6 @@ import { ProductsModule } from 'src/products/products.module';
   ])],
   controllers: [UsersController, CartsController],
   providers: [UsersService, UsersStoreService, CartsService, CartsStoreService],
-  exports: [UsersService],
+  exports: [UsersService, CartsService],
 })
 export class UsersModule {}

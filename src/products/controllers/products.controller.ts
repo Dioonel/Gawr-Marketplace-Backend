@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, UseFilters } from '@nestjs/common';
 
 import { ProductsService } from './../services/products.service';
 import { CreateProductDTO, UpdateProductDTO } from './../dtos/products.dtos';
@@ -8,9 +8,11 @@ import { RolesGuard } from './../../auth/guards/roles.guard';
 import { Public } from './../../auth/decorators/public.decorator';
 import { Roles } from './../../auth/decorators/roles.decorator';
 import { Role } from './../../auth/models/roles.model';
+import { ViewAuthFilter } from './../../auth/guards/exception.filter';
 
 
 @UseGuards(JwtAuthGuard, RolesGuard)                                                          // Guard order MATTERS
+@UseFilters(ViewAuthFilter)
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {};

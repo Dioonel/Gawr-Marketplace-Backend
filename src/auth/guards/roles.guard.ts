@@ -13,7 +13,7 @@ export class RolesGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const roles: Role[] = this.reflector.get(ROLES_KEY, context.getHandler());
     if (!roles) {
-      return true;                                                                                // No roles required in that endpoint
+      return true;                                                                                // No roles required in this request
     }
     const request = context.switchToHttp().getRequest();
     const user = request.user as PayloadToken;

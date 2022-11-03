@@ -40,4 +40,8 @@ export class UsersService {
   async delete(id: string){
     return await this.userStore.delete(id);
   }
+
+  async getCartByUserId(userId: string){
+    return await this.userStore.getCartByUserId(userId);
+  }
 }
