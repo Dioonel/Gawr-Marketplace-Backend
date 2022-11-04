@@ -22,10 +22,10 @@ export class UsersController {
   @Public()
   @Get(':id')
   getOneUser(@Param('id', MongoIdPipe) id: string){
-    console.log('wtf');
     return this.usersService.getOne(id);
   }
 
+  @Public()
   @Post()
   createUser(@Body() body: CreateUserDTO){
     return this.usersService.create(body);

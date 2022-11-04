@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty, IsMongoId, Length } from 'class-validator';
+import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty, IsMongoId, Length, IsArray } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateUserDTO {
@@ -28,6 +28,10 @@ export class CreateUserDTO {
   @IsMongoId()
   @IsOptional()
   readonly cart: string;
+
+  // @IsOptional()
+  // @IsArray()
+  // readonly postings: string[];                                                       don't want users to update their postings from here
 }
 
 export class UpdateUserDTO extends PartialType(CreateUserDTO) {}

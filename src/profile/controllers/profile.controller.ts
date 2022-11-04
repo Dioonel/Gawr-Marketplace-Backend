@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Req, Redirect, UseFilters } from '@nestjs/common';
+import { Controller, Get, Delete, UseGuards, Req, Redirect, UseFilters } from '@nestjs/common';
 import { Request } from 'express';
 
 import { PayloadToken } from './../../auth/models/token.model';
@@ -24,5 +24,11 @@ export class ProfileController {
   getMyCart(@Req() req: Request){
     const payload = req.user as PayloadToken;
     return this.usersService.getCartByUserId(payload.sub);
+  }
+
+  @Delete('delete')
+  deleteMyProfile(@Req() req: Request){
+    const payload = req.user as PayloadToken;
+    return this.usersService.delete(payload.sub);
   }
 }

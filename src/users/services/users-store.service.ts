@@ -45,6 +45,7 @@ export class UsersStoreService {
       const { password, ...res } = user.toJSON()                                                // Remove password from response
       return res;
     } catch (err) {
+      console.log(err);
       throw new BadRequestException("Please choose another username.");
     }
   }
@@ -75,5 +76,23 @@ export class UsersStoreService {
       throw new NotFoundException("User/cart not found.");
     }
     return cart.cart;
+  }
+
+  async pushPosting(userId: string, postingId: string) {
+    const user = await this.userModel.findByIdAndUpdate(userId, { $addToSet: { postings: postingId }}, {new: true})
+    .select('-__v');
+  if (!user) {
+    throw new NotFoundException("User not found.");
+  }
+  return user;
+  }
+
+  async popPosting(userId: string, postingId: string) {
+    const user = await this.userModel.findByIdAndUpdate(userId, { $pull: { postings: postingId }}, {new: true})
+    .select('-__v');
+  if (!user) {
+    throw new NotFoundException("User not found.");
+  }
+  return user;
   }
 }

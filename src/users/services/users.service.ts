@@ -1,13 +1,19 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 
 import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
 import { CartsService } from './carts.service';
 import { UsersStoreService } from './users-store.service';
+import { PostingsService } from './../../postings/services/postings.service';
 import { isEmpty } from './../../common/extra/fns';
 
 @Injectable()
 export class UsersService {
-  constructor(private userStore: UsersStoreService, private cartService: CartsService) {}
+  constructor(
+    private userStore: UsersStoreService,
+    private cartService: CartsService,
+    @Inject(forwardRef(() => PostingsService))
+    private postingsService: PostingsService
+    ) {}
 
   async getAll() {
     return await this.userStore.getAll();
@@ -38,10 +44,23 @@ export class UsersService {
   }
 
   async delete(id: string){
-    return await this.userStore.delete(id);
+    const postsData = await this.postingsService.deleteAllPostingsFromUser(id);
+    const userData = await this.userStore.delete(id);
+    return {
+      postsDeletion: postsData,
+      userDeletion: userData,
+    };
   }
 
   async getCartByUserId(userId: string){
     return await this.userStore.getCartByUserId(userId);
+  }
+
+  async pushPosting(userId: string, postingId: string){
+    return await this.userStore.pushPosting(userId, postingId);
+  }
+
+  async popPosting(userId: string, postingId: string){
+    return await this.userStore.popPosting(userId, postingId);
   }
 }
