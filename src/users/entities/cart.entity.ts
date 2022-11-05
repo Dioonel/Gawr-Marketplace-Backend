@@ -9,7 +9,7 @@ export class Cart extends Document{
     product: { required: true, type: Types.ObjectId, ref: Product.name, immutable: true },
     quantity: { required: true, type: Number, default: 1 },
     subtotal: { required: false, type: Number }
-  }]})
+  }], immutable: false })
   items: Types.Array<Record<string, any>> | undefined[];
 
   @Prop({ required: false, type: Number })

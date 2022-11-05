@@ -1,5 +1,4 @@
-import { IsNumber, IsPositive, IsOptional, IsMongoId, IsNotEmpty } from 'class-validator';
-import { Product } from '../entities/product.entity';
+import { IsNumber, IsPositive, IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class CreateItemDTO {
   @IsNotEmpty()

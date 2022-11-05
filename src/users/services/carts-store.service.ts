@@ -48,14 +48,20 @@ export class CartsStoreService {
       .select('-__v');
   }
 
-  async popItem(cartId: string, itemId: string){
-    const cart = await this.cartModel.findByIdAndUpdate(cartId, { $pull: { items: itemId }}, { new: true })
-      .populate({ path: 'items.product', select: '-__v'})
-      .select('-__v');
+  async popItem(cartId: string, productId: string){
+    const cart = await this.cartModel.findById(cartId);
     if(!cart){
       throw new NotFoundException("Cart not found.");
     }
-    return cart;
+    const index = cart.items.findIndex((item) => item.product.toString() === productId);
+    if(index === -1){
+      throw new NotFoundException("Product not found.");
+    }
+    cart.items.splice(index, 1);
+    await cart.save();
+    return await this.cartModel.findById(cartId)
+      .populate({ path: 'items.product', select: '-__v'})
+      .select('-__v');
   }
 
   async empty(id: string){
@@ -65,5 +71,13 @@ export class CartsStoreService {
       throw new NotFoundException("Cart not found.");
     }
     return cart;
+  }
+
+  async delete(id: string){
+    const cart = await this.cartModel.findByIdAndDelete(id);
+    if (!cart) {
+      throw new NotFoundException("Cart not found.");
+    }
+    return true;
   }
 }

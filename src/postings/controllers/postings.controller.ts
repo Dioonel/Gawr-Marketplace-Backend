@@ -34,7 +34,6 @@ export class PostingsController {
   @Public()
   @Get(':id')
   getOnePosting(@Param('id', MongoIdPipe) id: string){
-    console.log('detail');
     return this.postingsService.getOne(id);
   }
 

@@ -5,10 +5,12 @@ import * as bcrypt from 'bcrypt';
 
 import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
 import { User } from './../entities/user.entity';
+import { Cart } from './../entities/cart.entity';
+import { CartsService } from './../services/carts.service';
 
 @Injectable()
 export class UsersStoreService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>, private cartService: CartsService) {}
 
   async getAll() {
     return await this.userModel.find()
@@ -45,7 +47,7 @@ export class UsersStoreService {
       const { password, ...res } = user.toJSON()                                                // Remove password from response
       return res;
     } catch (err) {
-      console.log(err);
+      await this.cartService.delete(data.cart);
       throw new BadRequestException("Please choose another username.");
     }
   }
@@ -75,7 +77,7 @@ export class UsersStoreService {
     if (!cart){
       throw new NotFoundException("User/cart not found.");
     }
-    return cart.cart;
+    return cart.cart as Cart;
   }
 
   async pushPosting(userId: string, postingId: string) {

@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 
@@ -20,7 +20,7 @@ export class RolesGuard implements CanActivate {
 
     const isAuth = roles.some(r => r === user.role);
     if(!isAuth) {
-      throw new UnauthorizedException('Insufficient permissions');
+      throw new ForbiddenException('Insufficient permissions');
     }
     return isAuth;
   }

@@ -1,13 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
-import { ProductsService } from 'src/products/services/products.service';
+import { ProductsService } from './../../products/services/products.service';
+import { UsersService } from './users.service';
 import { CartsStoreService } from './carts-store.service';
 import { CreateItemDTO } from './../../products/dtos/items.dtos';
 import { subtotal, total } from 'src/common/extra/fns';
 
 @Injectable()
 export class CartsService {
-  constructor(private cartStore: CartsStoreService, private productsService: ProductsService) {}
+  constructor(
+    private cartStore: CartsStoreService,
+    private productsService: ProductsService,
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService) {}
 
   async getAll() {
     return await this.cartStore.getAll();
@@ -23,18 +28,25 @@ export class CartsService {
     return await this.cartStore.create();
   }
 
-  async pushItem(cartId: string, item: CreateItemDTO){
+  async pushItem(userId: string, item: CreateItemDTO){
+    const cart = await this.usersService.getCartByUserId(userId);
     const product = await this.productsService.getOne(item.product);
     if(product){
-      return await this.cartStore.pushItem(cartId, item);
+      return await this.cartStore.pushItem(cart._id, item);
     }
   }
 
-  async popItem(cartId: string, itemId: string){
-    return await this.cartStore.popItem(cartId, itemId);
+  async popItem(userId: string, productId: string){
+    const cart = await this.usersService.getCartByUserId(userId);
+    return await this.cartStore.popItem(cart._id, productId);
   }
 
-  async empty(id: string){
-    return await this.cartStore.empty(id);
+  async empty(userId: string){
+    const cart = await this.usersService.getCartByUserId(userId);
+    return await this.cartStore.empty(cart._id);
+  }
+
+  async delete(id: string){
+    return await this.cartStore.delete(id);
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 
+import { total, subtotal } from './../../common/extra/fns';
 import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
 import { CartsService } from './carts.service';
 import { UsersStoreService } from './users-store.service';
@@ -10,6 +11,7 @@ import { isEmpty } from './../../common/extra/fns';
 export class UsersService {
   constructor(
     private userStore: UsersStoreService,
+    @Inject(forwardRef(() => CartsService))
     private cartService: CartsService,
     @Inject(forwardRef(() => PostingsService))
     private postingsService: PostingsService
@@ -44,16 +46,22 @@ export class UsersService {
   }
 
   async delete(id: string){
+    let cartData = false;
+    const cart = await this.userStore.getCartByUserId(id);
+    cartData = await this.cartService.delete(cart._id);
     const postsData = await this.postingsService.deleteAllPostingsFromUser(id);
     const userData = await this.userStore.delete(id);
     return {
       postsDeletion: postsData,
+      cartDeletion: cartData,
       userDeletion: userData,
     };
   }
 
   async getCartByUserId(userId: string){
-    return await this.userStore.getCartByUserId(userId);
+    const cart = await this.userStore.getCartByUserId(userId);
+    cart.items = subtotal(cart.items);
+    return total(cart);
   }
 
   async pushPosting(userId: string, postingId: string){
