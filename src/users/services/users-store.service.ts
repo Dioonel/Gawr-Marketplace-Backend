@@ -15,13 +15,13 @@ export class UsersStoreService {
   async getAll() {
     return await this.userModel.find()
       .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
-      .select('-__v');
+      .select(['-__v', '-password']);
   }
 
   async getOne(id: string) {
     const user = await this.userModel.findById(id)
       .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
-      .select('-__v');
+      .select(['-__v', '-password']);
     if (!user) {
       throw new NotFoundException("User not found.");
     }
@@ -68,16 +68,6 @@ export class UsersStoreService {
       throw new NotFoundException("User not found.");
     }
     return true;
-  }
-
-  async getCartByUserId(userId: string){
-    const cart = await this.userModel.findById(userId)
-      .select('cart')
-      .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}});
-    if (!cart){
-      throw new NotFoundException("User/cart not found.");
-    }
-    return cart.cart as Cart;
   }
 
   async pushPosting(userId: string, postingId: string) {

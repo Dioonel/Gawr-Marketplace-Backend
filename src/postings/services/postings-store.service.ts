@@ -14,7 +14,7 @@ export class PostingsStoreService {
   }
 
   async getOne(id: string){
-    const post = await this.postingModel.findById(id).select('-__v');
+    const post = await this.postingModel.findById(id).select('-__v').populate({ path: 'product', select: '-__v'});
     if (!post) {
       throw new NotFoundException("Post not found.");
     }

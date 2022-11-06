@@ -24,26 +24,33 @@ export class CartsService {
     return total(cart);
   }
 
+  async getCartByUser(userId: string){
+    let cart = await this.cartStore.getCartByUser(userId);
+    cart.items = subtotal(cart.items);
+    return total(cart);
+  }
+
   async create(){
     return await this.cartStore.create();
   }
 
+  async initUser(id: string, userId: string){
+    return await this.cartStore.initUser(id, userId);
+  }
+
   async pushItem(userId: string, item: CreateItemDTO){
-    const cart = await this.usersService.getCartByUserId(userId);
     const product = await this.productsService.getOne(item.product);
     if(product){
-      return await this.cartStore.pushItem(cart._id, item);
+      return await this.cartStore.pushItem(userId, item);
     }
   }
 
   async popItem(userId: string, productId: string){
-    const cart = await this.usersService.getCartByUserId(userId);
-    return await this.cartStore.popItem(cart._id, productId);
+    return await this.cartStore.popItem(userId, productId);
   }
 
   async empty(userId: string){
-    const cart = await this.usersService.getCartByUserId(userId);
-    return await this.cartStore.empty(cart._id);
+    return await this.cartStore.empty(userId);
   }
 
   async delete(id: string){

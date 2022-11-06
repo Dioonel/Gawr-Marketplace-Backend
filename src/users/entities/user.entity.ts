@@ -22,7 +22,7 @@ export class User extends Document{
   image: string;
 
   @Prop({ required: true, type: Types.ObjectId, ref: Cart.name, immutable: true })
-  cart?: Cart | Types.ObjectId;
+  cart: Cart | Types.ObjectId;
 
   @Prop({ required: false, type: [{ type: Types.ObjectId, ref: Posting.name }] })
   postings: Types.Array<Posting>;

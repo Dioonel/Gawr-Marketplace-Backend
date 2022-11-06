@@ -33,7 +33,7 @@ export class ProfileController {
   @Get('cart')
   getMyCart(@Req() req: Request){
     const payload = req.user as PayloadToken;
-    return this.usersService.getCartByUserId(payload.sub);
+    return this.cartsService.getCartByUser(payload.sub);
   }
 
   @Post('cart')

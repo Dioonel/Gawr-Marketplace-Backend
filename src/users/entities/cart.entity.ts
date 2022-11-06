@@ -1,10 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-import { Product } from 'src/products/entities/product.entity';
+import { User } from './user.entity';
+import { Product } from './../../products/entities/product.entity';
 
 @Schema()
 export class Cart extends Document{
+  @Prop({ required: true, type: Types.ObjectId, ref: 'users', default: '' })
+  user: User | Types.ObjectId;
+
   @Prop({ type: [{
     product: { required: true, type: Types.ObjectId, ref: Product.name, immutable: true },
     quantity: { required: true, type: Number, default: 1 },

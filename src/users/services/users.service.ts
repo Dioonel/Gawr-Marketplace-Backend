@@ -35,7 +35,9 @@ export class UsersService {
       ...data,
       cart: newCart._id
     }
-    return await this.userStore.create(user);
+    const newUser = await this.userStore.create(user);
+    await this.cartService.initUser(newCart._id, newUser._id);
+    return newUser;
   }
 
   async update(id: string, changes: UpdateUserDTO){
@@ -47,7 +49,7 @@ export class UsersService {
 
   async delete(id: string){
     let cartData = false;
-    const cart = await this.userStore.getCartByUserId(id);
+    const cart = await this.cartService.getCartByUser(id);
     cartData = await this.cartService.delete(cart._id);
     const postsData = await this.postingsService.deleteAllPostingsFromUser(id);
     const userData = await this.userStore.delete(id);
@@ -56,12 +58,6 @@ export class UsersService {
       cartDeletion: cartData,
       userDeletion: userData,
     };
-  }
-
-  async getCartByUserId(userId: string){
-    const cart = await this.userStore.getCartByUserId(userId);
-    cart.items = subtotal(cart.items);
-    return total(cart);
   }
 
   async pushPosting(userId: string, postingId: string){
