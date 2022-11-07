@@ -1,18 +1,18 @@
 import { Injectable, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 
-import { total, subtotal } from './../../common/extra/fns';
 import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
 import { CartsService } from './carts.service';
 import { UsersStoreService } from './users-store.service';
 import { PostingsService } from './../../postings/services/postings.service';
+import { CommentsService } from './../../postings/services/comments.service';
 import { isEmpty } from './../../common/extra/fns';
 
 @Injectable()
 export class UsersService {
   constructor(
     private userStore: UsersStoreService,
-    @Inject(forwardRef(() => CartsService))
     private cartService: CartsService,
+    private commentsService: CommentsService,
     @Inject(forwardRef(() => PostingsService))
     private postingsService: PostingsService
     ) {}
@@ -51,11 +51,13 @@ export class UsersService {
     let cartData = false;
     const cart = await this.cartService.getCartByUser(id);
     cartData = await this.cartService.delete(cart._id);
+    const commentsData = await this.commentsService.deleteAllCommentsFromUser(id);
     const postsData = await this.postingsService.deleteAllPostingsFromUser(id);
     const userData = await this.userStore.delete(id);
     return {
       postsDeletion: postsData,
       cartDeletion: cartData,
+      commentsData: commentsData,
       userDeletion: userData,
     };
   }

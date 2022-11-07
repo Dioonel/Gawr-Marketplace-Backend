@@ -2,7 +2,9 @@ import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, UseFilters,
 import { Request } from 'express';
 
 import { PostingsService } from './../services/postings.service';
+import { CommentsService } from './../services/comments.service';
 import { rawPostingDTO } from './../dtos/posting.dto';
+import { rawCommentDTO } from './../dtos/comment.dto';
 import { PayloadToken } from './../../auth/models/token.model';
 import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
 import { JwtAuthGuard } from './../../auth/guards/jwt-auth.guard';
@@ -17,7 +19,7 @@ import { ViewAuthFilter } from './../../auth/guards/exception.filter';
 @UseFilters(ViewAuthFilter)
 @Controller('postings')
 export class PostingsController {
-  constructor(private postingsService: PostingsService) {};
+  constructor(private postingsService: PostingsService, private commentsService: CommentsService) {};
 
   @Public()
   @Get()
@@ -49,5 +51,23 @@ export class PostingsController {
   deletePosting(@Param('id', MongoIdPipe) id: string, @Req() req: Request) {
     const { sub } = req.user as PayloadToken;
     return this.postingsService.delete(id, sub);
+  }
+
+
+////////////////////////////////////////////////////////// Comments //////////////////////////////////////////////////////////////
+
+  @Roles(Role.USER, Role.ADMIN)
+  @Post(':id')
+  async createComment(@Body() body: rawCommentDTO, @Req() req: Request, @Param('id', MongoIdPipe) postId: string){
+    const { sub } = req.user as PayloadToken;
+    const comment = await this.commentsService.create(postId, body, sub);
+    return this.postingsService.pushComment(postId, comment._id);
+  }
+
+  @Roles(Role.USER, Role.ADMIN)
+  @Delete(':postId/:commentId')
+  deleteComment(@Param('postId', MongoIdPipe) postId: string, @Param('commentId', MongoIdPipe) commentId: string, @Req() req: Request) {
+    const { sub } = req.user as PayloadToken;
+    return this.commentsService.delete(postId, commentId, sub);
   }
 }

@@ -3,7 +3,9 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { PostingsStoreService } from './postings-store.service';
 import { ProductsService } from './../../products/services/products.service';
 import { UsersService } from './../../users/services/users.service';
+import { CommentsService } from './comments.service';
 import { rawPostingDTO, CreatePostingDTO } from './../dtos/posting.dto';
+import { Comment } from './../entities/comment.entity';
 
 @Injectable()
 export class PostingsService {
@@ -11,7 +13,9 @@ export class PostingsService {
     private postingsStore: PostingsStoreService,
     private productsService: ProductsService,
     @Inject(forwardRef(() => UsersService))
-    private usersService: UsersService
+    private usersService: UsersService,
+    @Inject(forwardRef(() => CommentsService))
+    private commentsService: CommentsService
     ) {}
 
   async getAll() {
@@ -50,5 +54,20 @@ export class PostingsService {
 
   async deleteAllPostingsFromUser(userId: string) {
     return this.postingsStore.deleteAllPostingsFromUser(userId);
+  }
+
+  async pushComment(postId: string, commentId: string) {
+    return await this.postingsStore.pushComment(postId, commentId);
+  }
+
+  async popComment(postId: string, commentId: string) {
+    return await this.postingsStore.popComment(postId, commentId);
+  }
+
+  async popManyComments(comments: Comment[]) {
+    for(let comment of comments){
+      await this.postingsStore.popComment(comment.posting, comment._id);
+    }
+    return true;
   }
 }

@@ -3,6 +3,7 @@ import { Document, Types } from 'mongoose';
 
 import { Product } from './../../products/entities/product.entity';
 import { User } from './../../users/entities/user.entity';
+import { Comment } from './comment.entity';
 
 @Schema()
 export class Posting extends Document{
@@ -14,6 +15,9 @@ export class Posting extends Document{
 
   @Prop({ required: true })
   description: string;
+
+  @Prop({ required: false, type: [{ type: Types.ObjectId, ref: Comment.name }] })
+  comments: Types.Array<Comment>;
 }
 
 export const PostingSchema = SchemaFactory.createForClass(Posting);

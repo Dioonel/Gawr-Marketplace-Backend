@@ -1,18 +1,13 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { ProductsService } from './../../products/services/products.service';
-import { UsersService } from './users.service';
 import { CartsStoreService } from './carts-store.service';
 import { CreateItemDTO } from './../../products/dtos/items.dtos';
 import { subtotal, total } from 'src/common/extra/fns';
 
 @Injectable()
 export class CartsService {
-  constructor(
-    private cartStore: CartsStoreService,
-    private productsService: ProductsService,
-    @Inject(forwardRef(() => UsersService))
-    private usersService: UsersService) {}
+  constructor(private cartStore: CartsStoreService, private productsService: ProductsService) {}
 
   async getAll() {
     return await this.cartStore.getAll();
