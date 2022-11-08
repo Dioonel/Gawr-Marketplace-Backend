@@ -16,7 +16,7 @@ export class User extends Document{
   role: string;
 
   @Prop({ type: Number, required: false })
-  age?: number;
+  age: number;
 
   @Prop({ required: false, default: '' })
   image: string;
@@ -26,6 +26,9 @@ export class User extends Document{
 
   @Prop({ required: false, type: [{ type: Types.ObjectId, ref: Posting.name }] })
   postings: Types.Array<Posting>;
+
+  @Prop({ required: true, type: Date , default: new Date() })
+  created_at: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

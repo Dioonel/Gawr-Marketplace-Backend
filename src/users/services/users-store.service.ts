@@ -21,19 +21,18 @@ export class UsersStoreService {
   async getAll(filter?: FilterQuery<User>, limit?: number | undefined, offset?: number | undefined) {
     if(filter){
       return await this.userModel.find(filter)
-      .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
-      .limit(limit || null)
-      .skip((limit || 1) * offset || 0)
-      .select(['-__v', '-password']);
+        .limit(limit || null)
+        .skip((limit || 1) * offset || 0)
+        .select(['-__v', '-password']);
     }
     return await this.userModel.find()
-      .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
       .select(['-__v', '-password']);
   }
 
   async getOne(id: string) {
     const user = await this.userModel.findById(id)
-      .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
+      //.populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
+      .populate({path: 'postings', select: '-__v'})
       .select(['-__v', '-password']);
     if (!user) {
       throw new NotFoundException("User not found.");
@@ -43,7 +42,6 @@ export class UsersStoreService {
 
   async getByUsername(username: string) {
     const user = await this.userModel.findOne({ username })
-      .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
       .select('-__v');
     if (!user) {
       throw new NotFoundException("User not found.");
@@ -67,7 +65,6 @@ export class UsersStoreService {
 
   async update(id: string, changes: UpdateUserDTO){
     const user = await this.userModel.findByIdAndUpdate(id, {$set: changes}, {new: true})
-      .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
       .select('-__v');
     if (!user) {
       throw new NotFoundException("User not found.");
@@ -85,7 +82,7 @@ export class UsersStoreService {
 
   async pushPosting(userId: string, postingId: string) {
     const user = await this.userModel.findByIdAndUpdate(userId, { $addToSet: { postings: postingId }}, {new: true})
-    .select('-__v');
+      .select('-__v');
   if (!user) {
     await this.postingsService.delete(postingId, userId);
     throw new NotFoundException("User not found.");
@@ -95,7 +92,7 @@ export class UsersStoreService {
 
   async popPosting(userId: string, postingId: string) {
     const user = await this.userModel.findByIdAndUpdate(userId, { $pull: { postings: postingId }}, {new: true})
-    .select('-__v');
+      .select('-__v');
   if (!user) {
     throw new NotFoundException("User not found.");
   }

@@ -34,9 +34,9 @@ export class PostingsStoreService {
       filterPosts.product = { $in: filteredIds }
 
       return await this.postingModel.find(filterPosts)
-      .limit(query.limit || null)
-      .skip((query.limit || 1) * query.offset || 0)
-      .select('-__v');
+        .limit(query.limit || null)
+        .skip((query.limit || 1) * query.offset || 0)
+        .select('-__v');
     }
     return await this.postingModel.find().select('-__v');
   }

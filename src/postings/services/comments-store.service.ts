@@ -10,7 +10,7 @@ export class CommentsStoreService {
   constructor(@InjectModel(Comment.name) private commentModel: Model<Comment>) {}
 
   async getCommentsByUser(userId: string){
-    const comments = this.commentModel.find({ user: userId });
+    const comments = await this.commentModel.find({ user: userId });
     if(!comments){
       return null;
     }

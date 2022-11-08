@@ -36,6 +36,7 @@ export class PostingsService {
       seller: userId,
       product: product._id,
       title: data.title,
+      image: data.image || '',
       description: data.description
     }
     const post = await this.postingsStore.create(myPosting);

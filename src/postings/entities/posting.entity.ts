@@ -19,8 +19,14 @@ export class Posting extends Document{
   @Prop({ required: true })
   description: string;
 
+  @Prop({ required: false })
+  image: string;
+
   @Prop({ required: false, type: [{ type: Types.ObjectId, ref: Comment.name }] })
   comments: Types.Array<Comment>;
+
+  @Prop({ required: true, type: Date , default: new Date() })
+  created_at: Date;
 }
 
 export const PostingSchema = SchemaFactory.createForClass(Posting);

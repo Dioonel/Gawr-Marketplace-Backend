@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsMongoId, IsOptional, IsPositive, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsMongoId, IsOptional, IsPositive, Min, IsUrl } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 import { CreateProductDTO } from './../../products/dtos/products.dtos';
@@ -14,6 +14,10 @@ export class rawPostingDTO {
   @IsNotEmpty()
   @IsString()
   readonly description: string;
+
+  @IsOptional()
+  @IsUrl()
+  readonly image: string;
 }
 
 export class CreatePostingDTO {
@@ -32,6 +36,10 @@ export class CreatePostingDTO {
   @IsNotEmpty()
   @IsString()
   readonly description: string;
+
+  @IsOptional()
+  @IsUrl()
+  readonly image: string;
 }
 
 export class UpdatePostingDTO extends PartialType(CreatePostingDTO) {}
