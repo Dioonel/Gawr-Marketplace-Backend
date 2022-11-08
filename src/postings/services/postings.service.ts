@@ -1,11 +1,15 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { FilterQuery } from 'mongoose';
 
 import { PostingsStoreService } from './postings-store.service';
 import { ProductsService } from './../../products/services/products.service';
 import { UsersService } from './../../users/services/users.service';
 import { CommentsService } from './comments.service';
-import { rawPostingDTO, CreatePostingDTO } from './../dtos/posting.dto';
+import { rawPostingDTO, CreatePostingDTO, FilterPostingDTO } from './../dtos/posting.dto';
+import { Posting } from './../entities/posting.entity';
 import { Comment } from './../entities/comment.entity';
+import { Product } from './../../products/entities/product.entity';
+import { filter } from 'rxjs';
 
 @Injectable()
 export class PostingsService {
@@ -18,8 +22,8 @@ export class PostingsService {
     private commentsService: CommentsService
     ) {}
 
-  async getAll() {
-    return await this.postingsStore.getAll();
+  async getAll(query?: FilterPostingDTO) {
+    return await this.postingsStore.getAll(query);
   }
 
   async getOne(id: string) {
@@ -31,6 +35,7 @@ export class PostingsService {
     const myPosting: CreatePostingDTO = {
       seller: userId,
       product: product._id,
+      title: data.title,
       description: data.description
     }
     const post = await this.postingsStore.create(myPosting);
@@ -46,6 +51,7 @@ export class PostingsService {
     const post = await this.postingsStore.getOne(postingId);
     if(post.seller.toString() === userId) {
       const res = await this.postingsStore.delete(postingId);
+      await this.productsService.delete(post.product._id);
       await this.usersService.popPosting(userId, post._id);
       return res;
     }

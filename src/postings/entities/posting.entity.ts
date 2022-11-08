@@ -14,6 +14,9 @@ export class Posting extends Document{
   product: Product | Types.ObjectId;
 
   @Prop({ required: true })
+  title: string;
+
+  @Prop({ required: true })
   description: string;
 
   @Prop({ required: false, type: [{ type: Types.ObjectId, ref: Comment.name }] })

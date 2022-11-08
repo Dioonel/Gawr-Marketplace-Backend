@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, FilterQuery } from 'mongoose';
 
 import { CreateProductDTO, UpdateProductDTO } from './../dtos/products.dtos';
 import { Product } from './../entities/product.entity';
@@ -9,7 +9,10 @@ import { Product } from './../entities/product.entity';
 export class ProductsStoreService {
   constructor(@InjectModel(Product.name) private productModel: Model<Product>) {}
 
-  async getAll() {
+  async getAll(filterProducts?: FilterQuery<Product>) {
+    if(filterProducts){
+      return await this.productModel.find(filterProducts).select('-__v');
+    }
     return await this.productModel.find().select('-__v');
   }
 

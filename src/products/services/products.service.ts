@@ -1,15 +1,17 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { FilterQuery } from 'mongoose';
 
 import { CreateProductDTO, UpdateProductDTO } from './../dtos/products.dtos';
 import { ProductsStoreService } from './products-store.service';
+import { Product } from './../entities/product.entity';
 import { isEmpty } from './../../common/extra/fns';
 
 @Injectable()
 export class ProductsService {
   constructor(private productsStore: ProductsStoreService) {}
 
-  async getAll() {
-    return await this.productsStore.getAll();
+  async getAll(filterProducts?: FilterQuery<Product>) {
+    return await this.productsStore.getAll(filterProducts);
   }
 
   async getOne(id: string){

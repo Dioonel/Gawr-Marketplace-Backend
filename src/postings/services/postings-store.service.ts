@@ -1,17 +1,43 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, FilterQuery } from 'mongoose';
 
-import { CreatePostingDTO } from './../dtos/posting.dto';
+import { CreatePostingDTO, FilterPostingDTO } from './../dtos/posting.dto';
 import { Posting } from './../entities/posting.entity';
 import { User } from './../../users/entities/user.entity';
+import { Product } from './../../products/entities/product.entity';
 import { CommentsService } from './comments.service';
+import { ProductsService } from './../../products/services/products.service';
+import { isEmpty } from './../../common/extra/fns';
 
 @Injectable()
 export class PostingsStoreService {
-  constructor(@InjectModel(Posting.name) private postingModel: Model<Posting>, private commentsService: CommentsService) {}
+  constructor(
+    @InjectModel(Posting.name) private postingModel: Model<Posting>,
+    private commentsService: CommentsService,
+    private productsService: ProductsService
+    ) {}
 
-  async getAll() {
+  async getAll(query?: FilterPostingDTO) {
+    if(!isEmpty(query)){
+      const filterPosts: FilterQuery<Posting> = {};
+      const filterProducts: FilterQuery<Product> = {};
+
+      if(query.title) filterPosts.title = { $regex: query.title, $exists: true, $options: 'i' }
+
+      if(query.minPrice) filterProducts.price = { $gte: query.minPrice };
+
+      if(query.maxPrice) filterProducts.price = { ...filterProducts.price, $lte: query.maxPrice };
+
+      const filteredProducts = await this.productsService.getAll(filterProducts);
+      const filteredIds = filteredProducts.map(product => product._id);
+      filterPosts.product = { $in: filteredIds }
+
+      return await this.postingModel.find(filterPosts)
+      .limit(query.limit || null)
+      .skip((query.limit || 1) * query.offset || 0)
+      .select('-__v');
+    }
     return await this.postingModel.find().select('-__v');
   }
 

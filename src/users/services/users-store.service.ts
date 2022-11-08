@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
@@ -7,10 +7,16 @@ import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
 import { User } from './../entities/user.entity';
 import { Cart } from './../entities/cart.entity';
 import { CartsService } from './../services/carts.service';
+import { PostingsService } from './../../postings/services/postings.service';
 
 @Injectable()
 export class UsersStoreService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>, private cartService: CartsService) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private cartService: CartsService,
+    @Inject(forwardRef(() => PostingsService))
+    private postingsService: PostingsService
+  ) {}
 
   async getAll() {
     return await this.userModel.find()
@@ -74,6 +80,7 @@ export class UsersStoreService {
     const user = await this.userModel.findByIdAndUpdate(userId, { $addToSet: { postings: postingId }}, {new: true})
     .select('-__v');
   if (!user) {
+    await this.postingsService.delete(postingId, userId);
     throw new NotFoundException("User not found.");
   }
   return user;

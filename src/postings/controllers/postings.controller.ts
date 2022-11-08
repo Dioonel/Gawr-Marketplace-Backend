@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, UseFilters, Req } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, UseFilters, Req, Query } from '@nestjs/common';
 import { Request } from 'express';
 
 import { PostingsService } from './../services/postings.service';
 import { CommentsService } from './../services/comments.service';
-import { rawPostingDTO } from './../dtos/posting.dto';
+import { rawPostingDTO, FilterPostingDTO } from './../dtos/posting.dto';
 import { rawCommentDTO } from './../dtos/comment.dto';
 import { PayloadToken } from './../../auth/models/token.model';
 import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
@@ -23,8 +23,8 @@ export class PostingsController {
 
   @Public()
   @Get()
-  getPostings(){
-    return this.postingsService.getAll();
+  getPostings(@Query() query: FilterPostingDTO){
+    return this.postingsService.getAll(query);
   }
 
   @Public()
