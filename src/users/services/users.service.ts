@@ -1,6 +1,8 @@
 import { Injectable, BadRequestException, Inject, forwardRef } from '@nestjs/common';
+import { FilterQuery } from 'mongoose';
 
-import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
+import { CreateUserDTO, UpdateUserDTO, FilterUserDTO } from './../dtos/users.dtos';
+import { User } from './../entities/user.entity';
 import { CartsService } from './carts.service';
 import { UsersStoreService } from './users-store.service';
 import { PostingsService } from './../../postings/services/postings.service';
@@ -17,7 +19,15 @@ export class UsersService {
     private postingsService: PostingsService
     ) {}
 
-  async getAll() {
+  async getAll(query?: FilterUserDTO){
+    if(!isEmpty(query)){
+      const filter: FilterQuery<User> = {};
+      const { limit, offset } = query;
+
+      if(query.username) filter.username = { $regex: query.username, $exists: true, $options: 'i' };
+
+      return await this.userStore.getAll(filter, limit, offset);
+    }
     return await this.userStore.getAll();
   }
 

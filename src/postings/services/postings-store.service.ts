@@ -23,7 +23,7 @@ export class PostingsStoreService {
       const filterPosts: FilterQuery<Posting> = {};
       const filterProducts: FilterQuery<Product> = {};
 
-      if(query.title) filterPosts.title = { $regex: query.title, $exists: true, $options: 'i' }
+      if(query.title) filterPosts.title = { $regex: query.title, $exists: true, $options: 'i' };
 
       if(query.minPrice) filterProducts.price = { $gte: query.minPrice };
 

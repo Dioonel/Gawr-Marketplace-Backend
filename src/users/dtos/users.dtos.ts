@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty, IsMongoId, Length, IsArray } from 'class-validator';
+import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty, IsMongoId, Length, Min } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateUserDTO {
@@ -35,3 +35,17 @@ export class CreateUserDTO {
 }
 
 export class UpdateUserDTO extends PartialType(CreateUserDTO) {}
+
+export class FilterUserDTO {
+  @IsOptional()
+  @IsPositive()
+  limit: number;
+
+  @IsOptional()
+  @Min(0)
+  offset: number;
+
+  @IsOptional()
+  @IsString()
+  username: string;
+}

@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Query } from '@nestjs/common';
 
-import { CreateUserDTO } from './../dtos/users.dtos';
+import { CreateUserDTO, FilterUserDTO } from './../dtos/users.dtos';
 import { UsersService } from './../services/users.service';
 import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
 
@@ -9,8 +9,8 @@ export class UsersController {
   constructor(private usersService: UsersService){}
 
   @Get()
-  getUsers(){
-    return this.usersService.getAll();
+  getUsers(@Query() query: FilterUserDTO){
+    return this.usersService.getAll(query);
   }
 
   @Get(':id')

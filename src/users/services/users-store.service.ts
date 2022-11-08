@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, FilterQuery } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
@@ -18,7 +18,14 @@ export class UsersStoreService {
     private postingsService: PostingsService
   ) {}
 
-  async getAll() {
+  async getAll(filter?: FilterQuery<User>, limit?: number | undefined, offset?: number | undefined) {
+    if(filter){
+      return await this.userModel.find(filter)
+      .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
+      .limit(limit || null)
+      .skip((limit || 1) * offset || 0)
+      .select(['-__v', '-password']);
+    }
     return await this.userModel.find()
       .populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
       .select(['-__v', '-password']);
