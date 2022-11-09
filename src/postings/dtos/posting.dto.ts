@@ -1,7 +1,7 @@
 import { IsString, IsNotEmpty, IsMongoId, IsOptional, IsPositive, Min, IsUrl } from 'class-validator';
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 
-import { CreateProductDTO } from './../../products/dtos/products.dtos';
+import { CreateProductDTO } from '../../products/dtos/products.dto';
 
 export class rawPostingDTO {
   @IsNotEmpty()

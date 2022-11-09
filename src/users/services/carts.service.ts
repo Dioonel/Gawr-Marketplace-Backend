@@ -2,7 +2,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { ProductsService } from './../../products/services/products.service';
 import { CartsStoreService } from './carts-store.service';
-import { CreateItemDTO } from './../../products/dtos/items.dtos';
+import { CreateItemDTO } from '../../products/dtos/items.dto';
 import { subtotal, total } from 'src/common/extra/fns';
 
 @Injectable()

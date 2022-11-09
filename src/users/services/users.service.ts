@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 import { FilterQuery } from 'mongoose';
 
-import { CreateUserDTO, UpdateUserDTO, FilterUserDTO } from './../dtos/users.dtos';
+import { CreateUserDTO, UpdateUserDTO, FilterUserDTO } from '../dtos/users.dto';
 import { User } from './../entities/user.entity';
 import { CartsService } from './carts.service';
 import { UsersStoreService } from './users-store.service';

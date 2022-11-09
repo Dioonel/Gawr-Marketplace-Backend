@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 import { Cart } from './../entities/cart.entity';
-import { CreateItemDTO } from 'src/products/dtos/items.dtos';
+import { CreateItemDTO } from './../../products/dtos/items.dto';
 
 @Injectable()
 export class CartsStoreService {

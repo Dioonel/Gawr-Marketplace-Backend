@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, FilterQuery } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
-import { CreateUserDTO, UpdateUserDTO } from './../dtos/users.dtos';
+import { CreateUserDTO, UpdateUserDTO } from '../dtos/users.dto';
 import { User } from './../entities/user.entity';
 import { Cart } from './../entities/cart.entity';
 import { CartsService } from './../services/carts.service';

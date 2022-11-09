@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { FilterQuery } from 'mongoose';
 
-import { CreateProductDTO, UpdateProductDTO } from './../dtos/products.dtos';
+import { CreateProductDTO, UpdateProductDTO } from '../dtos/products.dto';
 import { ProductsStoreService } from './products-store.service';
 import { Product } from './../entities/product.entity';
 import { isEmpty } from './../../common/extra/fns';
