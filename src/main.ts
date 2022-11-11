@@ -16,11 +16,11 @@ async function bootstrap() {
     .setTitle('e-Commerce API')
     .setDescription('Create your user, browse and create new posts, comment, use your cart and more!')
     .setVersion('1.0')
-    //.addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  await app.listen(3000);
+  app.enableCors();
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
