@@ -36,6 +36,7 @@ export class PostingsStoreService {
       return await this.postingModel.find(filterPosts)
         .limit(query.limit || null)
         .skip((query.limit || 1) * query.offset || 0)
+        .populate({ path: 'product', select: '-__v'})
         .select('-__v');
     }
     return await this.postingModel.find().select('-__v');
@@ -43,6 +44,7 @@ export class PostingsStoreService {
 
   async getOne(id: string){
     const post = await this.postingModel.findById(id)
+    .populate({ path: 'seller', select: 'username image', model: User.name })
     .populate({ path: 'product', select: '-__v'})
     .populate({ path: 'comments', select: '-__v', populate: { path: 'user', select: 'username image', model: User.name }})
     .select('-__v');
@@ -58,7 +60,9 @@ export class PostingsStoreService {
   }
 
   async getPostingsFromUser(userId: string){
-    const posts = await this.postingModel.find({ seller: userId }).select('-__v');
+    const posts = await this.postingModel.find({ seller: userId })
+    .populate({ path: 'product', select: '-__v'})
+    .select('-__v');
     if (!posts) {
       throw new NotFoundException("User not found.");
     }
