@@ -39,7 +39,9 @@ export class PostingsStoreService {
         .populate({ path: 'product', select: '-__v'})
         .select('-__v');
     }
-    return await this.postingModel.find().select('-__v');
+    return await this.postingModel.find()
+    .populate({ path: 'product', select: '-__v'})
+    .select('-__v');
   }
 
   async getOne(id: string){
