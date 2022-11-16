@@ -50,7 +50,7 @@ export class PostingsService {
 
   async delete(postingId: string, userId: string) {
     const post = await this.postingsStore.getOne(postingId);
-    if(post.seller.toString() === userId) {
+    if(post.seller._id.toString() === userId) {
       const res = await this.postingsStore.delete(postingId);
       await this.productsService.delete(post.product._id);
       await this.usersService.popPosting(userId, post._id);

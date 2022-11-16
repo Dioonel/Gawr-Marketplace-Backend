@@ -56,6 +56,7 @@ export class PostingsController {
   @Delete(':id')
   deletePosting(@Param('id', MongoIdPipe) id: string, @Req() req: Request) {
     const { sub } = req.user as PayloadToken;
+    console.log(sub, id);
     return this.postingsService.delete(id, sub);
   }
 
