@@ -14,10 +14,6 @@ export class rawPostingDTO {
   @IsNotEmpty()
   @IsString()
   readonly description: string;
-
-  @IsOptional()
-  @IsUrl()
-  readonly image: string;
 }
 
 export class CreatePostingDTO {
@@ -36,10 +32,6 @@ export class CreatePostingDTO {
   @IsNotEmpty()
   @IsString()
   readonly description: string;
-
-  @IsOptional()
-  @IsUrl()
-  readonly image: string;
 }
 
 export class UpdatePostingDTO extends PartialType(CreatePostingDTO) {}

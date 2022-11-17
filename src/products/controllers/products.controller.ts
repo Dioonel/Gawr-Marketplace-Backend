@@ -3,11 +3,12 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { ProductsService } from './../services/products.service';
 import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
+import { JwtAuthGuard } from './../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from './../../auth/guards/roles.guard';
 import { Roles } from './../../auth/decorators/roles.decorator';
 import { Role } from './../../auth/models/roles.model';
 
-@UseGuards(RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {

@@ -36,7 +36,6 @@ export class PostingsService {
       seller: userId,
       product: product._id,
       title: data.title,
-      image: data.image || '',
       description: data.description
     }
     const post = await this.postingsStore.create(myPosting);
@@ -50,7 +49,7 @@ export class PostingsService {
 
   async delete(postingId: string, userId: string) {
     const post = await this.postingsStore.getOne(postingId);
-    if(post.seller._id.toString() === userId) {
+    if(post.seller?._id.toString() === userId || post.seller === null){
       const res = await this.postingsStore.delete(postingId);
       await this.productsService.delete(post.product._id);
       await this.usersService.popPosting(userId, post._id);
