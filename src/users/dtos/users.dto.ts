@@ -25,8 +25,8 @@ export class CreateUserDTO {
   @IsUrl()
   readonly image: string;
 
-  @IsMongoId()
   @IsOptional()
+  @IsMongoId()
   readonly cart: string;
 
   // @IsOptional()

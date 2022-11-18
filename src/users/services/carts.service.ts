@@ -21,7 +21,9 @@ export class CartsService {
 
   async getCartByUser(userId: string){
     let cart = await this.cartStore.getCartByUser(userId);
-    cart.items = subtotal(cart.items);
+    if(cart.items.length > 0){
+      cart.items = subtotal(cart.items);
+    }
     return total(cart);
   }
 

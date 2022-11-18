@@ -18,8 +18,10 @@ export function subtotal(items: any[]) {
 
 export function total(cart: Cart) {
   cart.total = 0;
-  for(let item of cart.items){
-    cart.total += item.subtotal;
+  if(cart.items.length > 0){
+    for(let item of cart.items){
+      cart.total += item.subtotal;
+    }
   }
   return cart;
 }
