@@ -10,7 +10,7 @@ export function subtotal(items: any[]) {
     myItems.push({
       product: item.product,
       quantity: item.quantity,
-      subtotal: item.product.price * item.quantity
+      subtotal: (item.product?.price || 0) * (item.quantity || 1)
     });
   }
   return myItems;
