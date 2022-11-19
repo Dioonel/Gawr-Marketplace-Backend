@@ -1,21 +1,15 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { FilterQuery } from 'mongoose';
 
 import { PostingsStoreService } from './postings-store.service';
-import { ProductsService } from './../../products/services/products.service';
 import { UsersService } from './../../users/services/users.service';
 import { CommentsService } from './comments.service';
 import { rawPostingDTO, CreatePostingDTO, FilterPostingDTO } from './../dtos/posting.dto';
-import { Posting } from './../entities/posting.entity';
 import { Comment } from './../entities/comment.entity';
-import { Product } from './../../products/entities/product.entity';
-import { filter } from 'rxjs';
 
 @Injectable()
 export class PostingsService {
   constructor(
     private postingsStore: PostingsStoreService,
-    private productsService: ProductsService,
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
     @Inject(forwardRef(() => CommentsService))
@@ -31,12 +25,12 @@ export class PostingsService {
   }
 
   async create(data: rawPostingDTO, userId: string) {
-    const product = await this.productsService.create(data.product);
     const myPosting: CreatePostingDTO = {
       seller: userId,
-      product: product._id,
       title: data.title,
-      description: data.description
+      description: data.description,
+      price: data.price,
+      image: data.image
     }
     const post = await this.postingsStore.create(myPosting);
     await this.usersService.pushPosting(userId, post._id);
@@ -50,16 +44,16 @@ export class PostingsService {
   async delete(postingId: string, userId: string) {
     const post = await this.postingsStore.getOne(postingId);
     if(post.seller?._id.toString() === userId || post.seller === null){
+      await this.commentsService.deleteCommentsFromPosting(postingId);
       const res = await this.postingsStore.delete(postingId);
-      await this.productsService.delete(post.product._id);
       await this.usersService.popPosting(userId, post._id);
       return res;
     }
     return { message: "Stop trying to hack please :)" };
   }
 
-  async deleteAllPostingsFromUser(userId: string) {
-    return this.postingsStore.deleteAllPostingsFromUser(userId);
+  async deletePostingsFromUser(userId: string) {
+    return this.postingsStore.deletePostingsFromUser(userId);
   }
 
   async pushComment(postId: string, commentId: string) {

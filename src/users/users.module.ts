@@ -9,12 +9,10 @@ import { Cart, CartSchema } from './entities/cart.entity';
 import { CartsController } from './controllers/carts.controller';
 import { CartsService } from './services/carts.service';
 import { CartsStoreService } from './services/carts-store.service';
-import { ProductsModule } from './../products/products.module';
 import { PostingsModule } from './../postings/postings.module';
 
 @Module({
   imports: [
-    ProductsModule,
     forwardRef(() => PostingsModule),
     MongooseModule.forFeature([
     {

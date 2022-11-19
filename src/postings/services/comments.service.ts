@@ -4,7 +4,6 @@ import { CommentsStoreService } from './comments-store.service';
 import { PostingsService } from './postings.service';
 import { rawCommentDTO, CreateCommentDTO} from './../dtos/comment.dto';
 import { UsersService } from './../../users/services/users.service';
-//import { rawPostingDTO, CreatePostingDTO } from './../dtos/posting.dto';
 
 @Injectable()
 export class CommentsService {
@@ -40,12 +39,16 @@ export class CommentsService {
     return await this.commentsStore.delete(id);
   }
 
-  async deleteAllCommentsFromUser(userId: string) {
+  async deleteCommentsFromUser(userId: string) {
     const comments = await this.commentsStore.getCommentsByUser(userId);
     if(comments){
       await this.postingsService.popManyComments(comments);
-      return await this.commentsStore.deleteAllCommentsFromUser(userId);
+      return await this.commentsStore.deleteCommentsFromUser(userId);
     }
     return 'No comments';
+  }
+
+  async deleteCommentsFromPosting(postingId: string) {
+    return await this.commentsStore.deleteCommentsFromPosting(postingId);
   }
 }

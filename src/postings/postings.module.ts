@@ -2,7 +2,6 @@ import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { UsersModule } from './../users/users.module';
-import { ProductsModule } from './../products/products.module';
 import { PostingsController } from './controllers/postings.controller';
 import { PostingsService } from './services/postings.service';
 import { PostingsStoreService } from './services/postings-store.service';
@@ -13,7 +12,6 @@ import { CommentsStoreService } from './services/comments-store.service';
 
 @Module({
   imports: [
-    ProductsModule,
     forwardRef(() => UsersModule),
     MongooseModule.forFeature([
       {

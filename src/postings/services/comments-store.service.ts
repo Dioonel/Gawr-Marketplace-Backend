@@ -30,11 +30,19 @@ export class CommentsStoreService {
     return true;
   }
 
-  async deleteAllCommentsFromUser(userId: string){
+  async deleteCommentsFromUser(userId: string){
     const data = await this.commentModel.deleteMany({ user: userId });
     if(!data) {
       return null;
     }
     return data;
+  }
+
+  async deleteCommentsFromPosting(postingId: string){
+    const data = await this.commentModel.deleteMany({ posting: postingId });
+    if(!data) {
+      return null;
+    }
+    return true;
   }
 }

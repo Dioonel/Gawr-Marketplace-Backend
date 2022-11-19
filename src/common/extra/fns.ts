@@ -8,9 +8,9 @@ export function subtotal(items: any[]) {
   let myItems = [];
   for(let item of items) {
     myItems.push({
-      product: item.product,
+      posting: item.posting,
       quantity: item.quantity,
-      subtotal: (item.product?.price || 0) * (item.quantity || 1)
+      subtotal: (item.posting.price || 0) * (item.quantity || 1)
     });
   }
   return myItems;

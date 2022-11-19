@@ -5,7 +5,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PayloadToken } from './../../auth/models/token.model';
 import { UsersService } from './../../users/services/users.service';
 import { CartsService } from './../../users/services/carts.service';
-import { CreateItemDTO } from '../../products/dtos/items.dto';
+import { CreateItemDTO } from './../../postings/dtos/items.dto';
 import { UpdateUserDTO } from '../../users/dtos/users.dto';
 import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
 import { JwtAuthGuard } from './../../auth/guards/jwt-auth.guard';
@@ -56,13 +56,13 @@ export class ProfileController {
 
   @Delete('cart/:id')
   @ApiOperation({ summary: 'Remove an item from your cart.   *JWT required*' })
-  popItemToMyCart(@Req() req: Request, @Param('id', MongoIdPipe) productId: string) {
+  popItemToMyCart(@Req() req: Request, @Param('id', MongoIdPipe) postId: string) {
     const payload = req.user as PayloadToken;
-    return this.cartsService.popItem(payload.sub, productId);
+    return this.cartsService.popItem(payload.sub, postId);
   }
 
   @Delete('delete')
-  @ApiOperation({ summary: 'Delete your whole profile (includes owned cart, items, postings and products).   *JWT required*' })
+  @ApiOperation({ summary: 'Delete your whole profile (includes owned cart, items and postings).   *JWT required*' })
   deleteMyProfile(@Req() req: Request) {
     const payload = req.user as PayloadToken;
     return this.usersService.delete(payload.sub);

@@ -1,11 +1,7 @@
-import { IsString, IsNotEmpty, IsMongoId, IsOptional, IsPositive, Min, IsUrl } from 'class-validator';
+import { IsString, IsNotEmpty, IsMongoId, IsOptional, IsPositive, Min, IsUrl, IsNumber } from 'class-validator';
 import { PartialType } from '@nestjs/swagger';
 
-import { CreateProductDTO } from '../../products/dtos/products.dto';
-
 export class rawPostingDTO {
-  @IsNotEmpty()
-  readonly product: CreateProductDTO;
 
   @IsNotEmpty()
   @IsString()
@@ -14,6 +10,15 @@ export class rawPostingDTO {
   @IsNotEmpty()
   @IsString()
   readonly description: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  readonly price: number;
+
+  @IsOptional()
+  @IsUrl()
+  readonly image: string;
 }
 
 export class CreatePostingDTO {
@@ -22,16 +27,21 @@ export class CreatePostingDTO {
   readonly seller: string;
 
   @IsNotEmpty()
-  @IsMongoId()
-  readonly product: string;
-
-  @IsNotEmpty()
   @IsString()
   readonly title: string;
 
   @IsNotEmpty()
   @IsString()
   readonly description: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  readonly price: number;
+
+  @IsOptional()
+  @IsUrl()
+  readonly image: string;
 }
 
 export class UpdatePostingDTO extends PartialType(CreatePostingDTO) {}

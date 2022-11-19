@@ -5,7 +5,6 @@ import * as bcrypt from 'bcrypt';
 
 import { CreateUserDTO, UpdateUserDTO } from '../dtos/users.dto';
 import { User } from './../entities/user.entity';
-import { Cart } from './../entities/cart.entity';
 import { CartsService } from './../services/carts.service';
 import { PostingsService } from './../../postings/services/postings.service';
 
@@ -31,7 +30,6 @@ export class UsersStoreService {
 
   async getOne(id: string) {
     const user = await this.userModel.findById(id)
-      //.populate({path: 'cart', select: '-__v', populate: {path: 'items.product', select: '-__v'}})
       .populate({path: 'postings', select: '-__v'})
       .select(['-__v', '-password']);
     if (!user) {

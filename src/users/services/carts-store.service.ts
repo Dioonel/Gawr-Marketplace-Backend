@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 import { Cart } from './../entities/cart.entity';
-import { CreateItemDTO } from './../../products/dtos/items.dto';
+import { CreateItemDTO } from './../../postings/dtos/items.dto';
 
 @Injectable()
 export class CartsStoreService {
@@ -12,13 +12,13 @@ export class CartsStoreService {
 
   async getAll() {
     return await this.cartModel.find()
-      .populate({ path: 'items.product', select: '-__v'})
+      .populate({ path: 'items.posting', select: '-__v'})
       .select('-__v');
   }
 
   async getOne(id: string) {
     const cart = await this.cartModel.findById(id)
-      .populate({ path: 'items.product', select: '-__v'})
+      .populate({ path: 'items.posting', select: '-__v'})
       .select('-__v');
     if(!cart){
       throw new NotFoundException("Cart not found.");
@@ -29,7 +29,7 @@ export class CartsStoreService {
   async getCartByUser(userId: string){
     const user = new ObjectId(userId);
     const cart = await this.cartModel.findOne({ user })
-      .populate({ path: 'items.product', select: '-__v'})
+      .populate({ path: 'items.posting', select: '-__v'})
       .select('-__v');
     if(!cart){
       throw new NotFoundException("Cart not found.");
@@ -48,37 +48,37 @@ export class CartsStoreService {
 
   async pushItem(userId: string, newItem: CreateItemDTO){
     const user = new ObjectId(userId);
-    const cart = await this.cartModel.findOne({ user }).populate('items.product');
+    const cart = await this.cartModel.findOne({ user }).populate('items.posting');
     if(!cart){
       throw new NotFoundException("Cart not found.");
     }
-    const index = cart.items.findIndex(item => item.product._id.toString() === newItem.product);
+    const index = cart.items.findIndex(item => item.posting._id.toString() === newItem.posting);
     if(index === -1) {
       return await this.cartModel.findOneAndUpdate({ user }, { $addToSet: { items: newItem }}, { new: true })  // If item is not in cart, add it
-        .populate({ path: 'items.product', select: '-__v'})
+        .populate({ path: 'items.posting', select: '-__v'})
         .select('-__v');
     }
     cart.items[index].quantity += newItem.quantity;                                                 // If item is already in cart, add quantity
     await cart.save();
     return await this.cartModel.findOne({ user })
-      .populate({ path: 'items.product', select: '-__v'})
+      .populate({ path: 'items.posting', select: '-__v'})
       .select('-__v');
   }
 
-  async popItem(userId: string, productId: string){
+  async popItem(userId: string, postId: string){
     const user = new ObjectId(userId);
     const cart = await this.cartModel.findOne({ user });
     if(!cart){
       throw new NotFoundException("Cart not found.");
     }
-    const index = cart.items.findIndex((item) => item.product.toString() === productId);
+    const index = cart.items.findIndex((item) => item.posting.toString() === postId);
     if(index === -1){
-      throw new NotFoundException("Product not found.");
+      throw new NotFoundException("Post not found.");
     }
     cart.items.splice(index, 1);
     await cart.save();
     return await this.cartModel.findOne({ user })
-      .populate({ path: 'items.product', select: '-__v'})
+      .populate({ path: 'items.posting', select: '-__v'})
       .select('-__v');
   }
 

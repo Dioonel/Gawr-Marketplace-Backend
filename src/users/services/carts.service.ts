@@ -1,13 +1,13 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
-import { ProductsService } from './../../products/services/products.service';
 import { CartsStoreService } from './carts-store.service';
-import { CreateItemDTO } from '../../products/dtos/items.dto';
-import { subtotal, total } from 'src/common/extra/fns';
+import { CreateItemDTO } from '../../postings/dtos/items.dto';
+import { subtotal, total } from './../../common/extra/fns';
+import { PostingsService } from './../../postings/services/postings.service';
 
 @Injectable()
 export class CartsService {
-  constructor(private cartStore: CartsStoreService, private productsService: ProductsService) {}
+  constructor(private cartStore: CartsStoreService, private postingsService: PostingsService) {}
 
   async getAll() {
     return await this.cartStore.getAll();
@@ -36,14 +36,14 @@ export class CartsService {
   }
 
   async pushItem(userId: string, item: CreateItemDTO){
-    const product = await this.productsService.getOne(item.product);
-    if(product){
+    const posting = await this.postingsService.getOne(item.posting);
+    if(posting){
       return await this.cartStore.pushItem(userId, item);
     }
   }
 
-  async popItem(userId: string, productId: string){
-    return await this.cartStore.popItem(userId, productId);
+  async popItem(userId: string, postId: string){
+    return await this.cartStore.popItem(userId, postId);
   }
 
   async empty(userId: string){

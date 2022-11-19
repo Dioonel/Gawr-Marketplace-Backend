@@ -45,13 +45,13 @@ export class PostingsController {
 
   @Roles(Role.USER, Role.ADMIN)
   @Post()
-  @ApiOperation({ summary: 'Create a new posting and product.   *JWT required* *USER role or higher required*' })
+  @ApiOperation({ summary: 'Create a new posting.   *JWT required* *USER role or higher required*' })
   createPosting(@Body() body: rawPostingDTO, @Req() req: Request){
     const { sub } = req.user as PayloadToken;
     return this.postingsService.create(body, sub);
   }
 
-  @ApiOperation({ summary: 'Delete a posting and product (only if you are the author).   *JWT required* *USER role or higher required*' })
+  @ApiOperation({ summary: 'Delete a posting (only if you are the author).   *JWT required* *USER role or higher required*' })
   @Roles(Role.USER, Role.ADMIN)
   @Delete(':id')
   deletePosting(@Param('id', MongoIdPipe) id: string, @Req() req: Request) {

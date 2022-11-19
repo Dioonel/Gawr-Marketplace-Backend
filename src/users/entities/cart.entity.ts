@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 import { User } from './user.entity';
-import { Product } from './../../products/entities/product.entity';
+import { Posting } from './../../postings/entities/posting.entity';
 
 @Schema()
 export class Cart extends Document{
@@ -10,7 +10,7 @@ export class Cart extends Document{
   user: User | Types.ObjectId;
 
   @Prop({ type: [{
-    product: { required: true, type: Types.ObjectId, ref: Product.name, immutable: true },
+    posting: { required: true, type: Types.ObjectId, ref: Posting.name, immutable: true },
     quantity: { required: true, type: Number, default: 1 },
     subtotal: { required: false, type: Number }
   }], immutable: false })

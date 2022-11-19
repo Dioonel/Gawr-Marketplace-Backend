@@ -14,6 +14,7 @@ export class UsersService {
   constructor(
     private userStore: UsersStoreService,
     private cartService: CartsService,
+    @Inject(forwardRef(() => CommentsService))
     private commentsService: CommentsService,
     @Inject(forwardRef(() => PostingsService))
     private postingsService: PostingsService
@@ -23,9 +24,7 @@ export class UsersService {
     if(!isEmpty(query)){
       const filter: FilterQuery<User> = {};
       const { limit, offset } = query;
-
       if(query.username) filter.username = { $regex: query.username, $exists: true, $options: 'i' };
-
       return await this.userStore.getAll(filter, limit, offset);
     }
     return await this.userStore.getAll();
@@ -61,8 +60,8 @@ export class UsersService {
     let cartData = false;
     const cart = await this.cartService.getCartByUser(id);
     cartData = await this.cartService.delete(cart._id);
-    const commentsData = await this.commentsService.deleteAllCommentsFromUser(id);
-    const postsData = await this.postingsService.deleteAllPostingsFromUser(id);
+    const commentsData = await this.commentsService.deleteCommentsFromUser(id);
+    const postsData = await this.postingsService.deletePostingsFromUser(id);
     const userData = await this.userStore.delete(id);
     return {
       postsDeletion: postsData,
