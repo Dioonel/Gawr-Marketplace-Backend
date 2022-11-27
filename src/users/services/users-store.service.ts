@@ -63,7 +63,7 @@ export class UsersStoreService {
 
   async update(id: string, changes: UpdateUserDTO){
     const user = await this.userModel.findByIdAndUpdate(id, {$set: changes}, {new: true, runValidators: true})
-      .select('-__v');
+      .select(['-__v', '-password']);
     if (!user) {
       throw new NotFoundException("User not found.");
     }
