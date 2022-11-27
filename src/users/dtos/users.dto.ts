@@ -1,5 +1,7 @@
-import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty, IsMongoId, Length, Min } from 'class-validator';
+import { IsString, IsNumber, IsPositive, IsUrl, IsOptional, IsNotEmpty, IsMongoId, Length, Min, IsEmail, IsEnum } from 'class-validator';
 import { PartialType } from '@nestjs/swagger';
+
+import { Role, Gender, CountryCode } from './enums';
 
 export class CreateUserDTO {
 
@@ -14,7 +16,8 @@ export class CreateUserDTO {
 
   @IsOptional()
   @IsString()
-  readonly role: string;
+  @IsEnum(Role)
+  readonly role: Role;
 
   @IsOptional()
   @IsNumber()
@@ -24,6 +27,28 @@ export class CreateUserDTO {
   @IsOptional()
   @IsUrl()
   readonly image: string;
+
+  @IsOptional()
+  @IsEmail()
+  readonly email: string;
+
+  @IsOptional()
+  @IsString()
+  readonly bio: string;
+
+  @IsOptional()
+  @IsString()
+  @IsEnum(Gender)
+  readonly gender: Gender;
+
+  @IsOptional()
+  @IsUrl()
+  readonly social: string;
+
+  @IsOptional()
+  @IsString()
+  @IsEnum(CountryCode)
+  readonly country: CountryCode;
 
   @IsOptional()
   @IsMongoId()
