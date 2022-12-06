@@ -22,10 +22,14 @@ export class PostingsStoreService {
       if(query.minPrice) filter.price = { $gte: query.minPrice };
       if(query.maxPrice) filter.price = { ...filter.price, $lte: query.maxPrice };
 
-      return await this.postingModel.find(filter)
+      const data = await this.postingModel.find(filter)
         .limit(query.limit || 18)
         .skip((query.limit || 18) * query.offset || 0)
         .select('-__v');
+
+      const count = await this.postingModel.countDocuments(filter);
+
+      return { data, count };
     }
     const data = await this.postingModel.find()
     .select('-__v');

@@ -19,10 +19,14 @@ export class UsersStoreService {
 
   async getAll(filter?: FilterQuery<User>, limit?: number | undefined, offset?: number | undefined) {
     if(filter){
-      return await this.userModel.find(filter)
+      const data = await this.userModel.find(filter)
         .limit(limit || 18)
         .skip((limit || 18) * offset || 0)
         .select(['-__v', '-password']);
+
+      const count = await this.userModel.countDocuments(filter);
+
+      return { data, count };
     }
     const data = await this.userModel.find()
       .select(['-__v', '-password']);
