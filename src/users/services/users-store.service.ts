@@ -20,8 +20,8 @@ export class UsersStoreService {
   async getAll(filter?: FilterQuery<User>, limit?: number | undefined, offset?: number | undefined) {
     if(filter){
       return await this.userModel.find(filter)
-        .limit(limit || null)
-        .skip((limit || 1) * offset || 0)
+        .limit(limit || 18)
+        .skip((limit || 18) * offset || 0)
         .select(['-__v', '-password']);
     }
     return await this.userModel.find()

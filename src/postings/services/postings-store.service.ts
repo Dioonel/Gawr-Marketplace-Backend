@@ -23,8 +23,8 @@ export class PostingsStoreService {
       if(query.maxPrice) filter.price = { ...filter.price, $lte: query.maxPrice };
 
       return await this.postingModel.find(filter)
-        .limit(query.limit || null)
-        .skip((query.limit || 1) * query.offset || 0)
+        .limit(query.limit || 18)
+        .skip((query.limit || 18) * query.offset || 0)
         .select('-__v');
     }
     return await this.postingModel.find()
