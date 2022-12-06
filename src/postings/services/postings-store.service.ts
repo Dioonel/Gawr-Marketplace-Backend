@@ -27,8 +27,12 @@ export class PostingsStoreService {
         .skip((query.limit || 18) * query.offset || 0)
         .select('-__v');
     }
-    return await this.postingModel.find()
+    const data = await this.postingModel.find()
     .select('-__v');
+
+    const count = await this.postingModel.estimatedDocumentCount();
+
+    return { data, count };
   }
 
   async getOne(id: string){

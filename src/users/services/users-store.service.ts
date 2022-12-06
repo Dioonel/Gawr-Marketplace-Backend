@@ -24,8 +24,12 @@ export class UsersStoreService {
         .skip((limit || 18) * offset || 0)
         .select(['-__v', '-password']);
     }
-    return await this.userModel.find()
+    const data = await this.userModel.find()
       .select(['-__v', '-password']);
+
+    const count = await this.userModel.estimatedDocumentCount();
+
+    return { data, count };
   }
 
   async getOne(id: string) {
