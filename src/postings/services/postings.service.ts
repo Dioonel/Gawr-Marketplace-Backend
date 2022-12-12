@@ -2,6 +2,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { PostingsStoreService } from './postings-store.service';
 import { UsersService } from './../../users/services/users.service';
+import { CartsService } from './../../users/services/carts.service';
 import { CommentsService } from './comments.service';
 import { rawPostingDTO, CreatePostingDTO, FilterPostingDTO } from './../dtos/posting.dto';
 import { Comment } from './../entities/comment.entity';
@@ -12,6 +13,8 @@ export class PostingsService {
     private postingsStore: PostingsStoreService,
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
+    @Inject(forwardRef(() => CartsService))
+    private cartsService: CartsService,
     @Inject(forwardRef(() => CommentsService))
     private commentsService: CommentsService
     ) {}
@@ -44,9 +47,10 @@ export class PostingsService {
   async delete(postingId: string, userId: string) {
     const post = await this.postingsStore.getOne(postingId);
     if(post.seller?._id.toString() === userId || post.seller === null){
-      await this.commentsService.deleteCommentsFromPosting(postingId);
       const res = await this.postingsStore.delete(postingId);
+      await this.commentsService.deleteCommentsFromPosting(postingId);
       await this.usersService.popPosting(userId, post._id);
+      await this.cartsService.deletePostFromAllCarts(postingId);
       return res;
     }
     return { message: "Stop trying to hack please :)" };

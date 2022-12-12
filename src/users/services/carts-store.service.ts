@@ -92,6 +92,18 @@ export class CartsStoreService {
     return cart;
   }
 
+  async deletePostFromAllCarts(postId: string){
+    const carts = await this.cartModel.find();
+    for(const cart of carts){
+      const index = cart.items.findIndex((item) => item.posting.toString() === postId);
+      if(index !== -1){
+        cart.items.splice(index, 1);
+        await cart.save();
+      }
+    }
+    return true;
+  }
+
   async delete(id: string){
     const cart = await this.cartModel.findByIdAndDelete(id);
     if (!cart) {

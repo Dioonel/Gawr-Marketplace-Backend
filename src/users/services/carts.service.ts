@@ -50,6 +50,10 @@ export class CartsService {
     return await this.cartStore.empty(userId);
   }
 
+  async deletePostFromAllCarts(postId: string){
+    return await this.cartStore.deletePostFromAllCarts(postId);
+  }
+
   async delete(id: string){
     return await this.cartStore.delete(id);
   }
